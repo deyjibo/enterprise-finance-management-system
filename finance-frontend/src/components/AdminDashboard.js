@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-
+import API from "../services/api";
 export default function AdminDashboard() {
   const [customers, setCustomers] = useState([]);
   const [summary, setSummary] = useState([]);
@@ -22,10 +22,11 @@ export default function AdminDashboard() {
     const fetchCustomers = async () => {
       try {
         console.log("TOKEN:", localStorage.getItem("token"));
-        const res = await fetch("http://127.0.0.1:5000/api/customers", {
-          headers: { Authorization: token },
+        const res = await API.get("/customers", {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await res.json();
+
+        const data = res.data;
 
         // 🔥 ADD THIS BLOCK EXACTLY HERE
         if (!Array.isArray(data)) {
@@ -78,21 +79,19 @@ export default function AdminDashboard() {
         const summaryData = [];
 
         for (const c of filteredCustomers) {
-          const invoiceRes = await fetch(
-            `http://127.0.0.1:5000/api/invoices/customer/${c._id}`,
-            {
-              headers: { Authorization: token },
-            },
-          );
-          const invoices = await invoiceRes.json();
+          const invoiceRes = await API.get(`/invoices/customer/${c._id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
-          const collectionRes = await fetch(
-            `http://127.0.0.1:5000/api/collections/customer/${c._id}`,
+          const invoices = invoiceRes.data;
+          const collectionRes = await API.get(
+            `/collections/customer/${c._id}`,
             {
-              headers: { Authorization: token },
+              headers: { Authorization: `Bearer ${token}` },
             },
           );
-          const collections = await collectionRes.json();
+
+          const collections = collectionRes.data;
 
           const totalInvAllCustomer = invoices.reduce(
             (sum, inv) => sum + inv.invoiceAmount,
