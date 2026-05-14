@@ -29,7 +29,7 @@
     "electron-builder": "^26.8.1"
   },
   "scripts": {
-    "start": "electron .",
+    "start": "node server/server.js",
     "electron-start": "electron .",
     "build-frontend": "npm --prefix finance-frontend run build",
     "build": "npm run build-frontend && electron-builder --win",
