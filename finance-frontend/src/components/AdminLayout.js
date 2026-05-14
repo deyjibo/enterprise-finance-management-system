@@ -1,5 +1,8 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
+import API from "../services/api";
+
+
 const logo = process.env.PUBLIC_URL + "/logo.jpeg";
 
 export default function AdminLayout() {
@@ -28,7 +31,7 @@ export default function AdminLayout() {
 
   const handleBackup = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/backup", { method: "POST" });
+      const res = await API.post("/backup");
       setBackupStatus(res.ok ? "success" : "error");
     } catch {
       setBackupStatus("error");
