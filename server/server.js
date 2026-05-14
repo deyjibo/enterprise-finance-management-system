@@ -54,17 +54,17 @@ app.use("/api/statements", require("./routes/statementRoutes"));
 app.use("/api/collections", collectionRoutes);
 
 // ================= REACT FRONTEND =================
-const reactBuildPath = path.join(
-  __dirname,
-  "../finance-frontend/build"
-);
+// const reactBuildPath = path.join(
+//   __dirname,
+//   "../finance-frontend/build"
+// );
 
-app.use(express.static(reactBuildPath));
+// app.use(express.static(reactBuildPath));
 
-// ✅ FIXED (Express v5 compatible — no "*" route)
-app.use((req, res) => {
-  res.sendFile(path.join(reactBuildPath, "index.html"));
-});
+// // ✅ FIXED (Express v5 compatible — no "*" route)
+// app.use((req, res) => {
+//   res.sendFile(path.join(reactBuildPath, "index.html"));
+// });
 
 // ================= BACKUP =================
 const BACKUP_FOLDER = path.join(__dirname, "..", "backup");
