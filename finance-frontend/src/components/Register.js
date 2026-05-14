@@ -15,7 +15,7 @@ export default function Register() {
 
   const fetchRoles = async () => {
     try {
-      const res = await API.get("/api/auth/roles-count");
+      const res = await API.get("/auth/roles-count");
       setRolesStatus({ admin: res.data.admin, manager: res.data.manager });
 
       if (!res.data.admin) setRole("admin");
@@ -36,7 +36,7 @@ export default function Register() {
     const name = role === "admin" ? "Admin User" : "Manager User";
 
     try {
-      await API.post("/api/auth/register", { name, email, password, role });
+      await API.post("/auth/register", { name, email, password, role });
       setMessage(`${role} registered successfully!`);
       await fetchRoles();
       setEmail(""); setPassword("");
