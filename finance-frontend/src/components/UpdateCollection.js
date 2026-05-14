@@ -42,11 +42,9 @@ export default function UpdateCollection() {
 
     const fetchCollections = async () => {
       try {
-        const res = await fetch(
-          `http://127.0.0.1:5000/api/collections/customer/${selectedCustomer}`,
-          { headers: { Authorization: token } },
-        );
-        const data = await res.json();
+        const res = await API.get(`/collections/customer/${selectedCustomer}`);
+
+        const data = res.data;
 
         const from = fromDate ? new Date(fromDate) : null;
         const to = toDate ? new Date(toDate) : null;
