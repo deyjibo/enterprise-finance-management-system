@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-
+import API from "../services/api";
 export default function CustomerList() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,11 +12,10 @@ export default function CustomerList() {
   const fetchCustomers = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://127.0.0.1:5000/api/customers", {
-        headers: { Authorization: token },
-      });
-      const data = await response.json();
+      
+      const response = await API.get("/customers");
+
+      const data = response.data;
       setCustomers(data);
     } catch (err) {
       console.error(err);
@@ -60,20 +59,8 @@ export default function CustomerList() {
   // Update customer
   const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `http://127.0.0.1:5000/api/customers/${editCustomer._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(editCustomer),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to update customer");
+      
+      await API.put(`/customers/${editCustomer._id}`, editCustomer);
 
       setMessage("Customer updated successfully!");
       setEditCustomer(null);
@@ -87,13 +74,8 @@ export default function CustomerList() {
   // Delete customer
   const handleDelete = async (id) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`http://127.0.0.1:5000/api/customers/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: token },
-      });
-
-      if (!response.ok) throw new Error("Failed to delete customer");
+      
+      await API.delete(`/customers/${id}`);
 
       setMessage("Customer deleted successfully!");
       setDeleteCustomerId(null); // Close modal
@@ -238,7 +220,10 @@ export default function CustomerList() {
                   </select>
                 </div>
 
-                <button className="btn btn-success w-100" onClick={handleUpdate}>
+                <button
+                  className="btn btn-success w-100"
+                  onClick={handleUpdate}
+                >
                   Save Changes
                 </button>
               </div>
