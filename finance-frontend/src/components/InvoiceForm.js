@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-
+import API from "../services/api";
 export default function InvoiceForm() {
   const [customers, setCustomers] = useState([]);
   const [invoiceData, setInvoiceData] = useState({
@@ -22,10 +22,9 @@ export default function InvoiceForm() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/api/customers", {
-          headers: { Authorization: token },
-        });
-        const data = await res.json();
+        const res = await API.get("/customers");
+
+        const data = res.data;
         setCustomers(data);
       } catch (err) {
         console.error(err);
@@ -65,19 +64,7 @@ export default function InvoiceForm() {
     setMessage("");
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/invoices", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(invoiceData),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.message || "Failed to save invoice");
-      }
+      await API.post("/invoices", invoiceData);
 
       setMessage("Invoice saved successfully!");
 
@@ -109,7 +96,9 @@ export default function InvoiceForm() {
       <div className="card shadow-sm p-4 w-100" style={{ maxWidth: "700px" }}>
         <h3 className="text-center mb-4">Invoice Entry</h3>
 
-        {message && <div className="alert alert-info text-center">{message}</div>}
+        {message && (
+          <div className="alert alert-info text-center">{message}</div>
+        )}
 
         <form onSubmit={handleSubmit}>
           {/* ✅ UPDATED CUSTOMER SELECT */}
@@ -120,13 +109,12 @@ export default function InvoiceForm() {
               options={customerOptions}
               value={
                 customerOptions.find(
-                  (opt) => opt.value === invoiceData.customer
+                  (opt) => opt.value === invoiceData.customer,
                 ) || null
               }
               onChange={handleCustomerChange}
               placeholder="Search Customer..."
               isClearable
-
               // 🔥 SAME FIX AS STATEMENT
               menuPortalTarget={document.body}
               menuPosition="fixed"
@@ -211,7 +199,11 @@ export default function InvoiceForm() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+          <button
+            type="submit"
+            className="btn btn-primary w-100"
+            disabled={loading}
+          >
             {loading ? "Saving..." : "Save Invoice"}
           </button>
         </form>
