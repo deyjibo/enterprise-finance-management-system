@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-
+import API from "../services/api";
 export default function UpdateInvoice() {
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
@@ -22,10 +22,8 @@ export default function UpdateInvoice() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/api/customers", {
-          headers: { Authorization: token },
-        });
-        const data = await res.json();
+        const res = await API.get("/customers");
+        const data = res.data;
         setCustomers(data);
       } catch (err) {
         console.error(err);
@@ -47,7 +45,7 @@ export default function UpdateInvoice() {
 
     const fetchInvoices = async () => {
       try {
-        let url = `http://127.0.0.1:5000/api/invoices/customer/${selectedCustomer}`;
+        let url = `/invoices/customer/${selectedCustomer}`;
         if (fromDate || toDate) {
           const params = new URLSearchParams();
           if (fromDate) params.append("from", fromDate);
@@ -55,10 +53,8 @@ export default function UpdateInvoice() {
           url += `?${params.toString()}`;
         }
 
-        const res = await fetch(url, {
-          headers: { Authorization: token },
-        });
-        const data = await res.json();
+        const res = await API.get(url);
+        const data = res.data;
         setInvoices(data);
       } catch (err) {
         console.error(err);
@@ -90,30 +86,16 @@ export default function UpdateInvoice() {
 
   const handleUpdate = async () => {
     try {
-      const res = await fetch(
-        `http://127.0.0.1:5000/api/invoices/${editInvoiceId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(invoiceData),
-        }
-      );
-
-      if (!res.ok) throw new Error("Failed to update invoice");
+      await API.put(`/invoices/${editInvoiceId}`, invoiceData);
 
       setMessage("Invoice updated successfully");
       setEditInvoiceId(null);
       setInvoiceData({ billNo: "", invoiceDate: "", invoiceAmount: "" });
 
       // Refresh invoices
-      const refreshed = await fetch(
-        `http://127.0.0.1:5000/api/invoices/customer/${selectedCustomer}`,
-        { headers: { Authorization: token } }
-      );
-      const refreshedData = await refreshed.json();
+      const refreshed = await API.get(`/invoices/customer/${selectedCustomer}`);
+
+      const refreshedData = refreshed.data;
       setInvoices(refreshedData);
     } catch (err) {
       setMessage(err.message);
@@ -122,10 +104,7 @@ export default function UpdateInvoice() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://127.0.0.1:5000/api/invoices/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: token },
-      });
+      await API.delete(`/invoices/${id}`);
 
       setInvoices(invoices.filter((inv) => inv._id !== id));
       setDeleteInvoiceId(null); // Close modal
@@ -139,9 +118,7 @@ export default function UpdateInvoice() {
     <div className="container py-4">
       <h3 className="text-center mb-4">Update Invoice</h3>
 
-      {message && (
-        <div className="alert alert-info text-center">{message}</div>
-      )}
+      {message && <div className="alert alert-info text-center">{message}</div>}
 
       {/* FILTER SECTION */}
       <div className="row g-2 mb-3">
@@ -163,7 +140,11 @@ export default function UpdateInvoice() {
             menuShouldScrollIntoView={false}
             styles={{
               menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-              menuList: (base) => ({ ...base, maxHeight: "none", overflow: "visible" }),
+              menuList: (base) => ({
+                ...base,
+                maxHeight: "none",
+                overflow: "visible",
+              }),
             }}
           />
         </div>
