@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-
+import API from "../services/api";
 export default function ManagerDashboard() {
   const [customers, setCustomers] = useState([]);
   const [summary, setSummary] = useState([]);
@@ -21,18 +21,18 @@ export default function ManagerDashboard() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/api/customers", {
+        const res = await API.get("/api/customers", {
           headers: { Authorization: token },
         });
-        const data = await res.json();
+        const data = res.data;
 
-        const customersWithType = data.map(c => ({
+        const customersWithType = data.map((c) => ({
           ...c,
           customerType: (c.customerType || "RPD").trim(),
         }));
 
         setCustomers(customersWithType);
-        setAddresses([...new Set(customersWithType.map(c => c.address))]);
+        setAddresses([...new Set(customersWithType.map((c) => c.address))]);
       } catch (err) {
         console.error(err);
         setMessage("Failed to load customers");
@@ -44,11 +44,13 @@ export default function ManagerDashboard() {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const filteredCustomers = customers.filter(c => {
+        const filteredCustomers = customers.filter((c) => {
           const typeMatch = selectedType
             ? c.customerType.toLowerCase() === selectedType.toLowerCase()
             : true;
-          const addressMatch = selectedAddress ? c.address === selectedAddress : true;
+          const addressMatch = selectedAddress
+            ? c.address === selectedAddress
+            : true;
           return typeMatch && addressMatch;
         });
 
@@ -69,32 +71,52 @@ export default function ManagerDashboard() {
         const summaryData = [];
 
         for (const c of filteredCustomers) {
-          const invoiceRes = await fetch(`http://127.0.0.1:5000/api/invoices/customer/${c._id}`, {
+          const invoiceRes = await API.get(`/api/invoices/customer/${c._id}`, {
             headers: { Authorization: token },
           });
-          const invoices = await invoiceRes.json();
+          const invoices = invoiceRes.data;
 
-          const collectionRes = await fetch(`http://127.0.0.1:5000/api/collections/customer/${c._id}`, {
-            headers: { Authorization: token },
-          });
-          const collections = await collectionRes.json();
+          const collectionRes = await API.get(
+            `/api/collections/customer/${c._id}`,
+            {
+              headers: { Authorization: token },
+            },
+          );
+          const collections = collectionRes.data;
 
-          const totalInvAllCustomer = invoices.reduce((sum, inv) => sum + inv.invoiceAmount, 0);
-          const totalPaidAllCustomer = collections.reduce((sum, col) => sum + col.collectionAmount, 0);
-          const totalDueAllCustomer = totalInvAllCustomer - totalPaidAllCustomer;
+          const totalInvAllCustomer = invoices.reduce(
+            (sum, inv) => sum + inv.invoiceAmount,
+            0,
+          );
+          const totalPaidAllCustomer = collections.reduce(
+            (sum, col) => sum + col.collectionAmount,
+            0,
+          );
+          const totalDueAllCustomer =
+            totalInvAllCustomer - totalPaidAllCustomer;
 
           const from = fromDate ? new Date(fromDate) : null;
           const to = toDate ? new Date(toDate) : null;
 
           const invoicesDate = invoices.filter(
-            inv => (!from || new Date(inv.invoiceDate) >= from) && (!to || new Date(inv.invoiceDate) <= to)
+            (inv) =>
+              (!from || new Date(inv.invoiceDate) >= from) &&
+              (!to || new Date(inv.invoiceDate) <= to),
           );
           const collectionsDate = collections.filter(
-            col => (!from || new Date(col.collectionDate) >= from) && (!to || new Date(col.collectionDate) <= to)
+            (col) =>
+              (!from || new Date(col.collectionDate) >= from) &&
+              (!to || new Date(col.collectionDate) <= to),
           );
 
-          const totalInvDate = invoicesDate.reduce((sum, inv) => sum + inv.invoiceAmount, 0);
-          const totalPaidDateCustomer = collectionsDate.reduce((sum, col) => sum + col.collectionAmount, 0);
+          const totalInvDate = invoicesDate.reduce(
+            (sum, inv) => sum + inv.invoiceAmount,
+            0,
+          );
+          const totalPaidDateCustomer = collectionsDate.reduce(
+            (sum, col) => sum + col.collectionAmount,
+            0,
+          );
           const dueDateCustomer = totalInvDate - totalPaidDateCustomer;
 
           totalInvoicesDate += totalInvDate;
@@ -123,7 +145,7 @@ export default function ManagerDashboard() {
     if (summary.length === 0) return alert("No data to export");
 
     const wb = XLSX.utils.book_new();
-    const sheetData = summary.map(c => ({
+    const sheetData = summary.map((c) => ({
       Name: c.name,
       Phone: c.phone,
       Address: c.address,
@@ -146,24 +168,44 @@ export default function ManagerDashboard() {
       <div className="row g-3 mb-3">
         <div className="col-md-3">
           <label className="form-label">From Date</label>
-          <input type="date" className="form-control" value={fromDate} onChange={e => setFromDate(e.target.value)} />
+          <input
+            type="date"
+            className="form-control"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
         </div>
         <div className="col-md-3">
           <label className="form-label">To Date</label>
-          <input type="date" className="form-control" value={toDate} onChange={e => setToDate(e.target.value)} />
+          <input
+            type="date"
+            className="form-control"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
         </div>
         <div className="col-md-3">
           <label className="form-label">Filter by Address</label>
-          <select className="form-select" value={selectedAddress} onChange={e => setSelectedAddress(e.target.value)}>
+          <select
+            className="form-select"
+            value={selectedAddress}
+            onChange={(e) => setSelectedAddress(e.target.value)}
+          >
             <option value="">-- All Addresses --</option>
-            {addresses.map(addr => (
-              <option key={addr} value={addr}>{addr}</option>
+            {addresses.map((addr) => (
+              <option key={addr} value={addr}>
+                {addr}
+              </option>
             ))}
           </select>
         </div>
         <div className="col-md-3">
           <label className="form-label">Filter by Type</label>
-          <select className="form-select" value={selectedType} onChange={e => setSelectedType(e.target.value)}>
+          <select
+            className="form-select"
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+          >
             <option value="">All</option>
             <option value="RPD">RPD</option>
             <option value="Wholesale">Wholesale</option>
@@ -175,19 +217,28 @@ export default function ManagerDashboard() {
       {/* Date Range Cards with color */}
       <div className="row g-3 mb-4">
         <div className="col-md-4">
-          <div className="card text-center p-3 shadow-sm" style={{ backgroundColor: "#FF6B6B", color: "white" }}>
+          <div
+            className="card text-center p-3 shadow-sm"
+            style={{ backgroundColor: "#FF6B6B", color: "white" }}
+          >
             <h6>Total Invoice (Date Range)</h6>
             <h5>₹{totals.totalInvoicesDate}</h5>
           </div>
         </div>
         <div className="col-md-4">
-          <div className="card text-center p-3 shadow-sm" style={{ backgroundColor: "#4ECDC4", color: "white" }}>
+          <div
+            className="card text-center p-3 shadow-sm"
+            style={{ backgroundColor: "#4ECDC4", color: "white" }}
+          >
             <h6>Total Paid (Date Range)</h6>
             <h5>₹{totals.totalPaidDate}</h5>
           </div>
         </div>
         <div className="col-md-4">
-          <div className="card text-center p-3 shadow-sm" style={{ backgroundColor: "#FFD93D", color: "black" }}>
+          <div
+            className="card text-center p-3 shadow-sm"
+            style={{ backgroundColor: "#FFD93D", color: "black" }}
+          >
             <h6>Total Due (Date Range)</h6>
             <h5>₹{totals.totalDueDate}</h5>
           </div>
@@ -209,7 +260,7 @@ export default function ManagerDashboard() {
           </thead>
           <tbody>
             {summary.length > 0 ? (
-              summary.map(c => (
+              summary.map((c) => (
                 <tr key={c._id}>
                   <td>{c.name}</td>
                   <td>{c.phone}</td>
