@@ -3,7 +3,7 @@ import axios from "axios";
 /* ================= AXIOS INSTANCE ================= */
 
 const API = axios.create({
-  baseURL: "http://127.0.0.1:5000/api",
+  baseURL: process.env.REAct_APP_API_URL,
   withCredentials: false, // ❗ IMPORTANT (avoid CORS issue)
 });
 
