@@ -1,6 +1,6 @@
 # 💼 Enterprise Finance Management System
 
-<h1 align="center">📊 Enterprise Finance Management System</h1>
+<h1 align="center">📊 Enterprise Finance Management System - Finoventra</h1>
 
 <p align="center">
   <b>A secure, scalable, and modern finance management platform for enterprises 🚀</b>
@@ -22,7 +22,7 @@
 
 ## 🌐 Live Demo  
 👉 Try the application here:  
-[https://your-live-demo-link.com](https://your-live-demo-link.com)
+[https://your-live-demo-link.com](https://finoventra.netlify.app/)
 
 ---
 
@@ -38,31 +38,25 @@ It provides **real-time insights**, **role-based access control**, and **secure 
 
 ### 🔐 Authentication & Security  
 - User registration & login system  
-- Role-based access (Admin / Manager / Employee)  
+- Role-based access (Admin / Manager)  
 - JWT-based authentication  
 - Password hashing using bcrypt  
 
 ### 💰 Financial Management  
 - Income & expense tracking  
-- Budget creation and monitoring  
-- Financial transaction history  
-- Category-based expense management  
+- Financial transaction history   
 
 ### 📊 Dashboard & Analytics  
 - Real-time financial dashboard  
-- Interactive charts & graphs  
-- Profit & loss overview  
 - Monthly & yearly reports  
 
 ### 🧾 Invoice & Billing  
 - Create and manage invoices  
-- Downloadable invoice PDFs  
 - Payment status tracking  
 
 ### 👥 User Management  
 - Add / remove employees  
-- Assign roles and permissions  
-- Activity logs for accountability  
+- Assign roles and permissions    
 
 ### 📱 UI/UX  
 - Fully responsive design  
@@ -76,9 +70,7 @@ It provides **real-time insights**, **role-based access control**, and **secure 
 ### Frontend  
 - React.js  
 - HTML5  
-- CSS3  
-- Tailwind CSS / Bootstrap  
-- Chart.js / Recharts  
+- CSS3    
 
 ### Backend  
 - Node.js  
@@ -92,10 +84,8 @@ It provides **real-time insights**, **role-based access control**, and **secure 
 - bcrypt.js  
 
 ### Deployment  
-- Frontend: Netlify / Vercel  
-- Backend: Render / AWS  
+- Frontend: Netlify 
+- Backend: Render
 - Database: MongoDB Atlas  
 
----
-
-## 📁 Project Structure  
+ 
