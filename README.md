@@ -17,7 +17,7 @@
 
 ## 🌐 Live Demo  
 👉 Try the application here:  
-[https://github.com/deyjibo/enterprise-finance-management-system](https://finoventra.netlify.app/)
+[https://finoventra.netlify.app](https://finoventra.netlify.app/)
 
 ---
 
