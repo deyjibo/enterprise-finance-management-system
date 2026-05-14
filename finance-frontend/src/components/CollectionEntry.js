@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-
+import API from "../services/api";
 export default function CollectionEntry() {
   const [customers, setCustomers] = useState([]);
   const [collectionData, setCollectionData] = useState({
@@ -24,10 +24,8 @@ export default function CollectionEntry() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/api/customers", {
-          headers: { Authorization: token },
-        });
-        const data = await res.json();
+        const res = await API.get("/customers");
+        const data = res.data;
         setCustomers(data);
       } catch (err) {
         console.error(err);
@@ -78,19 +76,7 @@ export default function CollectionEntry() {
     setMessage("");
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/collections", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(collectionData),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.message || "Failed to save collection");
-      }
+      await API.post("/collections", collectionData);
 
       setMessage("Collection saved successfully!");
       setCollectionData({
@@ -115,17 +101,13 @@ export default function CollectionEntry() {
     <div className="container py-4">
       <h3 className="text-center mb-4">Collection Entry</h3>
 
-      {message && (
-        <div className="alert alert-info text-center">{message}</div>
-      )}
+      {message && <div className="alert alert-info text-center">{message}</div>}
 
       <form onSubmit={handleSubmit}>
         <div className="row g-3">
-          
           {/* LEFT SIDE */}
           <div className="col-md-6">
             <div className="card p-3 h-100 shadow-sm">
-
               {/* ✅ SEARCHABLE DROPDOWN */}
               <div className="mb-3">
                 <label className="form-label">Customer</label>
@@ -134,18 +116,16 @@ export default function CollectionEntry() {
                   options={customerOptions}
                   value={
                     customerOptions.find(
-                      (opt) => opt.value === collectionData.customer
+                      (opt) => opt.value === collectionData.customer,
                     ) || null
                   }
                   onChange={handleCustomerSelect}
                   placeholder="Search Customer..."
                   isClearable
-
                   // 🔥 IMPORTANT FIX (no scrollbar, no UI change)
                   menuPortalTarget={document.body}
                   menuPosition="fixed"
                   menuShouldScrollIntoView={false}
-
                   styles={{
                     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                     menuList: (base) => ({
@@ -192,7 +172,6 @@ export default function CollectionEntry() {
           {/* RIGHT SIDE */}
           <div className="col-md-6">
             <div className="card p-3 h-100 shadow-sm">
-
               <div className="mb-3">
                 <label className="form-label">Collection Date</label>
                 <input
@@ -259,7 +238,6 @@ export default function CollectionEntry() {
               </button>
             </div>
           </div>
-
         </div>
       </form>
     </div>
