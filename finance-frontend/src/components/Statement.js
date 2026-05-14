@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import Select from "react-select";
-
+import API from "../services/api";
 export default function Statement() {
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
@@ -26,10 +26,11 @@ export default function Statement() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/api/customers", {
-          headers: { Authorization: token },
+        const res = await API.get("/customers", {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await res.json();
+
+        const data = res.data;
         setCustomers(data);
       } catch (err) {
         console.error(err);
@@ -45,26 +46,32 @@ export default function Statement() {
 
     const fetchData = async () => {
       try {
-        const invoiceRes = await fetch(
-          `http://127.0.0.1:5000/api/invoices/customer/${selectedCustomer}`,
-          { headers: { Authorization: token } }
+        const invoiceRes = await API.get(
+          `/invoices/customer/${selectedCustomer}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
         );
-        const invoiceData = await invoiceRes.json();
 
-        const collectionRes = await fetch(
-          `http://127.0.0.1:5000/api/collections/customer/${selectedCustomer}`,
-          { headers: { Authorization: token } }
+        const invoiceData = invoiceRes.data;
+
+        const collectionRes = await API.get(
+          `/collections/customer/${selectedCustomer}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
         );
-        const collectionData = await collectionRes.json();
+
+        const collectionData = collectionRes.data;
 
         const totalPurchaseAll = invoiceData.reduce(
           (sum, inv) => sum + inv.invoiceAmount,
-          0
+          0,
         );
 
         const totalPaidAll = collectionData.reduce(
           (sum, col) => sum + col.collectionAmount,
-          0
+          0,
         );
 
         const dueAmountAll = totalPurchaseAll - totalPaidAll;
@@ -90,12 +97,12 @@ export default function Statement() {
 
         const totalPurchaseDate = filteredInvoices.reduce(
           (sum, inv) => sum + inv.invoiceAmount,
-          0
+          0,
         );
 
         const totalPaidDate = filteredCollections.reduce(
           (sum, col) => sum + col.collectionAmount,
-          0
+          0,
         );
 
         const dueAmountDate = totalPurchaseDate - totalPaidDate;
@@ -140,7 +147,7 @@ export default function Statement() {
           : "",
         "Collection Amount": collections[i]?.collectionAmount || "",
         "Payment Mode": collections[i]?.paymentMode || "",
-        "Purpose": collections[i]?.purpose || "",
+        Purpose: collections[i]?.purpose || "",
       });
     }
 
@@ -165,9 +172,7 @@ export default function Statement() {
     <div className="container-fluid py-4" style={{ overflow: "visible" }}>
       <h3 className="text-center mb-4">Customer Statement</h3>
 
-      {message && (
-        <div className="alert alert-info text-center">{message}</div>
-      )}
+      {message && <div className="alert alert-info text-center">{message}</div>}
 
       {/* Filters */}
       <div className="row mb-3 g-2 align-items-end">
@@ -177,9 +182,8 @@ export default function Statement() {
           <Select
             options={customerOptions}
             value={
-              customerOptions.find(
-                (opt) => opt.value === selectedCustomer
-              ) || null
+              customerOptions.find((opt) => opt.value === selectedCustomer) ||
+              null
             }
             onChange={(selected) =>
               setSelectedCustomer(selected ? selected.value : "")
@@ -275,7 +279,9 @@ export default function Statement() {
                     invoices.map((inv) => (
                       <tr key={inv._id}>
                         <td>{inv.billNo || "-"}</td>
-                        <td>{new Date(inv.invoiceDate).toLocaleDateString()}</td>
+                        <td>
+                          {new Date(inv.invoiceDate).toLocaleDateString()}
+                        </td>
                         <td>₹{inv.invoiceAmount}</td>
                       </tr>
                     ))
@@ -302,7 +308,9 @@ export default function Statement() {
                   {collections.length > 0 ? (
                     collections.map((col) => (
                       <tr key={col._id}>
-                        <td>{new Date(col.collectionDate).toLocaleDateString()}</td>
+                        <td>
+                          {new Date(col.collectionDate).toLocaleDateString()}
+                        </td>
                         <td>₹{col.collectionAmount}</td>
                         <td>{col.paymentMode}</td>
                         <td>{col.purpose}</td>
