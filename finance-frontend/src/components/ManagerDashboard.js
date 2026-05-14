@@ -21,7 +21,7 @@ export default function ManagerDashboard() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await API.get("/api/customers", {
+        const res = await API.get("/customers", {
           headers: { Authorization: token },
         });
         const data = res.data;
@@ -71,13 +71,13 @@ export default function ManagerDashboard() {
         const summaryData = [];
 
         for (const c of filteredCustomers) {
-          const invoiceRes = await API.get(`/api/invoices/customer/${c._id}`, {
+          const invoiceRes = await API.get(`/invoices/customer/${c._id}`, {
             headers: { Authorization: token },
           });
           const invoices = invoiceRes.data;
 
           const collectionRes = await API.get(
-            `/api/collections/customer/${c._id}`,
+            `/collections/customer/${c._id}`,
             {
               headers: { Authorization: token },
             },
