@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-
+import API from "../services/api";
 export default function UpdateCollection() {
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
@@ -17,10 +17,8 @@ export default function UpdateCollection() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/api/customers", {
-          headers: { Authorization: token },
-        });
-        const data = await res.json();
+        const res = await API.get("/customers");
+        const data = res.data;
         setCustomers(data);
       } catch (err) {
         setMessage("Failed to load customers");
@@ -46,7 +44,7 @@ export default function UpdateCollection() {
       try {
         const res = await fetch(
           `http://127.0.0.1:5000/api/collections/customer/${selectedCustomer}`,
-          { headers: { Authorization: token } }
+          { headers: { Authorization: token } },
         );
         const data = await res.json();
 
@@ -71,8 +69,8 @@ export default function UpdateCollection() {
   const handleChange = (field, value) => {
     setCollections((prev) =>
       prev.map((col) =>
-        col._id === editingId ? { ...col, [field]: value } : col
-      )
+        col._id === editingId ? { ...col, [field]: value } : col,
+      ),
     );
   };
 
@@ -81,23 +79,11 @@ export default function UpdateCollection() {
 
   const handleSave = async (col) => {
     try {
-      const res = await fetch(
-        `http://127.0.0.1:5000/api/collections/${col._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(col),
-        }
-      );
+      const res = await API.put(`/collections/${col._id}`, col);
 
-      if (!res.ok) throw new Error("Failed to update collection");
-
-      const updated = await res.json();
+      const updated = res.data;
       setCollections((prev) =>
-        prev.map((c) => (c._id === updated._id ? updated : c))
+        prev.map((c) => (c._id === updated._id ? updated : c)),
       );
 
       setEditingId(null);
@@ -109,10 +95,7 @@ export default function UpdateCollection() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://127.0.0.1:5000/api/collections/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: token },
-      });
+      await API.delete(`/collections/${id}`);
 
       setCollections((prev) => prev.filter((col) => col._id !== id));
       setDeleteId(null); // close modal
@@ -148,7 +131,11 @@ export default function UpdateCollection() {
             menuShouldScrollIntoView={false}
             styles={{
               menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-              menuList: (base) => ({ ...base, maxHeight: "none", overflow: "visible" }),
+              menuList: (base) => ({
+                ...base,
+                maxHeight: "none",
+                overflow: "visible",
+              }),
             }}
           />
         </div>
@@ -243,7 +230,9 @@ export default function UpdateCollection() {
                     >
                       <option value="">Select</option>
                       <option value="Market">Market</option>
-                      <option value="Damage Collection">Damage Collection</option>
+                      <option value="Damage Collection">
+                        Damage Collection
+                      </option>
                       <option value="Market Return">Market Return</option>
                     </select>
                   ) : (
@@ -259,7 +248,10 @@ export default function UpdateCollection() {
                       >
                         Save
                       </button>
-                      <button className="btn btn-secondary me-2" onClick={handleCancel}>
+                      <button
+                        className="btn btn-secondary me-2"
+                        onClick={handleCancel}
+                      >
                         Cancel
                       </button>
                     </>
@@ -311,10 +303,16 @@ export default function UpdateCollection() {
                 Are you sure you want to delete this collection?
               </div>
               <div className="modal-footer justify-content-center">
-                <button className="btn btn-secondary" onClick={() => setDeleteId(null)}>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setDeleteId(null)}
+                >
                   Cancel
                 </button>
-                <button className="btn btn-danger" onClick={() => handleDelete(deleteId)}>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleDelete(deleteId)}
+                >
                   Delete
                 </button>
               </div>
