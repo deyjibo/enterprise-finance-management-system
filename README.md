@@ -1,5 +1,3 @@
-# 💼 Enterprise Finance Management System
-
 <h1 align="center">📊 Enterprise Finance Management System - Finoventra</h1>
 
 <p align="center">
@@ -7,14 +5,11 @@
 </p>
 
 <p align="center">
-  <a href="#" target="_blank">
+  <a href="https://finoventra.netlify.app/" target="_blank">
     <img src="https://img.shields.io/badge/Live-Demo-blue?style=for-the-badge&logo=vercel" />
   </a>
-  <a href="https://github.com/your-username/enterprise-finance-management-system" target="_blank">
+  <a href="https://github.com/deyjibo/enterprise-finance-management-system" target="_blank">
     <img src="https://img.shields.io/badge/GitHub-Repo-black?style=for-the-badge&logo=github" />
-  </a>
-  <a href="#" target="_blank">
-    <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
   </a>
 </p>
 
@@ -22,7 +17,7 @@
 
 ## 🌐 Live Demo  
 👉 Try the application here:  
-[https://your-live-demo-link.com](https://finoventra.netlify.app/)
+[https://github.com/deyjibo/enterprise-finance-management-system](https://finoventra.netlify.app/)
 
 ---
 
