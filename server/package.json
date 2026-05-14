@@ -1,0 +1,44 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Finance App",
+  "main": "server.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "fs-extra": "^11.3.4",
+    "googleapis": "^171.4.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.1.1",
+    "mongoose": "^9.3.3",
+    "node-cron": "^4.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "build": {
+    "appId": "com.finance.app",
+    "productName": "FinanceApp",
+    "files": [
+      "**/*"
+    ],
+    "asarUnpack": [
+      "**/mongodb/**"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "icon": "icon.ico",
+      "target": "nsis"
+    }
+  }
+}

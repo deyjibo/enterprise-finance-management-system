@@ -1,0 +1,76 @@
+{
+  "name": "enterprise-finance-system",
+  "version": "1.0.0",
+  "description": "Enterprise Finance System Electron App",
+  "main": "main.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "bootstrap": "^5.3.8",
+    "chart.js": "^4.5.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "electron-is-dev": "^3.0.1",
+    "express": "^5.2.1",
+    "fs-extra": "^11.1.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.3.3",
+    "node-cron": "^4.2.1",
+    "node-fetch": "^3.3.2",
+    "react-chartjs-2": "^5.3.1",
+    "react-select": "^5.10.2",
+    "twilio": "^5.13.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/parse-json": "^4.0.2",
+    "electron": "^26.6.10",
+    "electron-builder": "^26.8.1"
+  },
+  "scripts": {
+    "start": "electron .",
+    "electron-start": "electron .",
+    "build-frontend": "npm --prefix finance-frontend run build",
+    "build": "npm run build-frontend && electron-builder --win",
+    "dist": "npm run build-frontend && electron-builder --win"
+  },
+  "build": {
+    "asar": false,
+    "appId": "com.finance.app",
+    "productName": "FinanceApp",
+    "directories": {
+      "buildResources": "assets"
+    },
+    "files": [
+      "main.js",
+      "app/**/*",
+      "server/**/*",
+      "finance-frontend/build/**/*",
+      "backup/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "backup",
+        "to": "backup",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "node_modules/fs-extra",
+        "to": "node_modules/fs-extra"
+      },
+      {
+        "from": "node_modules/node-cron",
+        "to": "node_modules/node-cron"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    }
+  }
+}

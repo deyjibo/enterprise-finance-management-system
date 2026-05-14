@@ -1,0 +1,35 @@
+# Node modules (VERY IMPORTANT)
+node_modules/
+
+# Build folders
+dist/
+build/
+out/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+
+# Electron
+release/
+
+# VS Code
+.vscode/
+
+# React
+frontend/build/
+
+# MongoDB local files (if any)
+data/
+
+# Package lock (optional)
+package-lock.json
+yarn.lock
