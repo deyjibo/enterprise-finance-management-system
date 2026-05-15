@@ -45,10 +45,6 @@ It provides **real-time insights**, **role-based access control**, and **secure 
 - Real-time financial dashboard  
 - Monthly & yearly reports  
 
-### 🧾 Invoice & Billing  
-- Create and manage invoices  
-- Payment status tracking  
-
 ### 👥 User Management  
 - Add / remove employees  
 - Assign roles and permissions    
