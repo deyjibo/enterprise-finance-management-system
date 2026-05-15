@@ -16,8 +16,7 @@
 ---
 
 ## 🌐 Live Demo  
-👉 Try the application here:  
-[Finoventra](https://finoventra.netlify.app/)
+👉 Try the application here:  [Finoventra](https://finoventra.netlify.app/)
 
 ---
 
