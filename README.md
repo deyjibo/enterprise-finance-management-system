@@ -6,10 +6,10 @@
 
 <p align="center">
   <a href="https://finoventra.netlify.app/" target="_blank">
-    <img src="https://img.shields.io/badge/Live-Demo-blue?style=for-the-badge&logo=vercel" />
+    <img src="https://img.shields.io/badge/Live-Demo-green?style=for-the-badge&logo=netlify" alt="Live Demo" />
   </a>
   <a href="https://github.com/deyjibo/enterprise-finance-management-system" target="_blank">
-    <img src="https://img.shields.io/badge/GitHub-Repo-black?style=for-the-badge&logo=github" />
+    <img src="https://img.shields.io/badge/GitHub-Repo-black?style=for-the-badge&logo=github" alt="GitHub Repo" />
   </a>
 </p>
 
@@ -60,27 +60,23 @@ It provides **real-time insights**, **role-based access control**, and **secure 
 
 ---
 
-## 🛠️ Tech Stack  
+## Tech Stack
+- **Frontend:** HTML,CSS,JavaScript, React
+- **Backend:** Node.js, Express.js  
+- **Database:** MongoDB (NoSQL)
 
-### Frontend  
-- React.js  
-- HTML5  
-- CSS3    
-
-### Backend  
-- Node.js  
-- Express.js  
-
-### Database  
-- MongoDB (Mongoose ORM)  
-
-### Authentication  
-- JWT (JSON Web Token)  
-- bcrypt.js  
-
-### Deployment  
-- Frontend: Netlify 
-- Backend: Render
-- Database: MongoDB Atlas  
+  
+## 🚀 Getting Started  
+Run it Locally 
+```bash
+###  Run the Backend First
+cd backend
+npm install
+npm start
+###  Run the Frontend Next
+cd frontend
+npm install
+npm start
+ 
 
  
