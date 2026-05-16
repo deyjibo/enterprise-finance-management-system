@@ -65,10 +65,10 @@ It provides **real-time insights**, **role-based access control**, and **secure 
 Run it Locally 
 ```bash
 ###  Run the Backend First
-cd backend
+cd server
 npm install
 npm start
 ###  Run the Frontend Next
-cd frontend
+cd finance-frontend
 npm install
 npm start
